@@ -1,9 +1,19 @@
+OPTS=
+
+#Include
+CP= src:src/GUI
+OPTS+=-cp ${CP}
+
+#Move .class files to ./
+CDIR= .
+OPTS+= -d ${CDIR}
+
 all: AsteroidsGUI
 run: Run
 clean: Clean
 
-AsteroidsGUI: AsteroidsGUI.java
-	javac AsteroidsGUI.java
+AsteroidsGUI: src/GUI/AsteroidsGUI.java
+	javac src/GUI/AsteroidsGUI.java ${OPTS}
 Run: AsteroidsGUI
 	java AsteroidsGUI
 Clean:
