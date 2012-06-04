@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
 import pl.piekarczyk.Asteroids2D.Model.Input.*;
 import pl.piekarczyk.Asteroids2D.Model.Common.*;
+import pl.piekarczyk.Asteroids2D.Model.Listener.*;
 
 public class AsteroidsModel {
   public static AsteroidsModel getAsteroidsModel() {
@@ -182,6 +183,15 @@ public class AsteroidsModel {
     //TODO FIXME
     //keys[k] = state;
   }
+  public void addListener(AsteroidListener l) {
+    listenerList.add(l);
+  }
+  public void notifyUpdAll() {
+    ListIterator<AsteroidListener> it =
+      listenerList.listIterator();
+    while(it.hasNext())
+      it.next().updAll();
+  }
   private AsteroidsModel() {
     gameInit = true;
     gamePaused = false;
@@ -207,14 +217,9 @@ public class AsteroidsModel {
 
   private Queue<InputEvent> inputQueue;
   private LinkedList<ModelObject> objectList;
+  private LinkedList<AsteroidListener> listenerList;
   private boolean[] keys;
 
-  //@OPT
-  //public abstract class Observator {
-  //  public void created();
-  //  public void updated();
-  //  public void destroyed();
-  //}
   //public class Viewable {
   //  //@OPT restrict access
   //  public Viewable(PhysicalObject obj) {

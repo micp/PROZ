@@ -9,10 +9,19 @@ public class PlayerShip extends PhysicalObject {
     super(nx, ny);
     height = 20;
     width = 20;
-    type = Types.PhysicalObjectTypes.SHIP;
+    type = Types.ObjectTypes.SHIP;
     accel = new PSAccelVector(0, 0);
   }
-  public void collide(Types.PhysicalObjectTypes collideWith) {
+  public PlayerShip(PlayerShip a) {
+    super(a);
+    this.accel = new PSAccelVector(a.getAccelVector());
+  }
+  public PlayerShip copy() {
+    return new PlayerShip(this);
+  }
+  //@OPT is modifiable, shouldn't be
+  public final PSAccelVector getAccelVector() { return accel; }
+  public void collide(Types.ObjectTypes collideWith) {
     //@OPT
     //lives--;
     //@OPT with whom collided?

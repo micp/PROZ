@@ -11,9 +11,12 @@ public class Enemy extends PhysicalObject {
     super(nx, ny);
     height = 20;
     width = 20;
-    type = Types.PhysicalObjectTypes.SHIP;
+    type = Types.ObjectTypes.SHIP;
   }
-  public void collide(Types.PhysicalObjectTypes collideWith) {
+  public Enemy(Enemy a) {
+    super(a);
+  }
+  public void collide(Types.ObjectTypes collideWith) {
     //@OPT with how collied?
     //@OPT up score
     removable = true;
@@ -22,5 +25,8 @@ public class Enemy extends PhysicalObject {
     //@OPT random change dir
     //@OPT try emit missile
     move();
+  }
+  public Enemy copy() {
+    return new Enemy(this);
   }
 }

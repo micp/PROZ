@@ -8,6 +8,10 @@ public abstract class StaticGameVector {
     magnitude = newMagnitude;
     direction = newDirection;
   }
+  public StaticGameVector(StaticGameVector a) {
+    magnitude = a.getMagnitude();
+    direction = a.getDirection();
+  }
   public int getMagnitude() { return magnitude; }
   public int getDirection() { return direction; }
   public void setMagnitude(int x) { /*@OPT check for < 0*/magnitude = x; }

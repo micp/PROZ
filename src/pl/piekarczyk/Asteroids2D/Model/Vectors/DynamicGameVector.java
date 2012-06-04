@@ -6,6 +6,9 @@ public abstract class DynamicGameVector extends StaticGameVector {
   public DynamicGameVector(int newMagnitude, int newDirection) {
     super(newMagnitude, newDirection);
   }
+  public DynamicGameVector(DynamicGameVector a) {
+    super(a);
+  }
   public abstract void accelerate();
   public abstract void decelerate();
   public abstract void rotate(StaticGameVector v, Types.Keys key);

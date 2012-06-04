@@ -11,9 +11,12 @@ public class Asteroid extends PhysicalObject {
     super(nx, ny);
     height = 20;
     width = 20;
-    type = Types.PhysicalObjectTypes.ASTEROID;
+    type = Types.ObjectTypes.ASTEROID;
   }
-  public void collide(Types.PhysicalObjectTypes collideWith) {
+  public Asteroid(Asteroid a) {
+    super(a);
+  }
+  public void collide(Types.ObjectTypes collideWith) {
     //@OPT up score
     //@OPT take care with whom collided
     //@OPT generate lesser level asteroids
@@ -21,5 +24,8 @@ public class Asteroid extends PhysicalObject {
   }
   public void step() {
     move();
+  }
+  public Asteroid copy() {
+    return new Asteroid(this);
   }
 }

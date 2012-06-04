@@ -9,6 +9,10 @@ public class PSAccelVector extends DynamicGameVector {
     super(newMagnitude, newDirection);
     speedBase = 0; 
   }
+  public PSAccelVector(PSAccelVector a) {
+    super(a);
+    speedBase = a.getSpeedBase();
+  }
   public void accelerate() { 
     magnitude = (int) Math.log1p( (double)++speedBase );
   }
@@ -16,14 +20,15 @@ public class PSAccelVector extends DynamicGameVector {
     magnitude = (int) Math.log1p( (double)--speedBase );
   }
   public void rotate(StaticGameVector v, Types.Keys key) {
-    if(key == Types.Keys.left) {
+    if(key == Types.Keys.LEFT) {
       direction = v.getDirection() - 90;
     }
-    if(key == Types.Keys.right) {
+    if(key == Types.Keys.RIGHT) {
       direction = v.getDirection() + 90;
     }
   }
   public void rotate(MomentumVector v) {
     direction = v.getDirection();
   }
+  public int getSpeedBase() { return speedBase; }
 }

@@ -7,7 +7,6 @@ import pl.piekarczyk.Asteroids2D.Model.Vectors.MomentumVector;
 
 public abstract class PhysicalObject extends ModelObject {
   protected int x, y, height, width, rot;
-  protected Types.PhysicalObjectTypes type;
   protected MomentumVector moment;
   protected void move() {
     int dx = (int) Math.sin(moment.getDirection()) * moment.getMagnitude();
@@ -24,12 +23,22 @@ public abstract class PhysicalObject extends ModelObject {
     //@OPT chhange params
     moment = new MomentumVector(0, 0);
   }
-  public abstract void collide(Types.PhysicalObjectTypes collideWith);
+  public PhysicalObject(PhysicalObject a) {
+    super(/*(ModelObject)*/ a);
+    this.x = a.getX();
+    this.y = a.getY();
+    this.height = a.getHeight();
+    this.width = a.getWidth();
+    this.moment = new MomentumVector(a.getMomentumVector());
+  }
+  public abstract void collide(Types.ObjectTypes collideWith);
   public int getX() { return x; }
   public int getY() { return y; }
   public int getHeight() { return height; }
   public int getWidth() { return width; }
   public int getRot() { return rot; }
-  public Types.PhysicalObjectTypes getType() { return type; }
+  //@OPT not modifiable
+  public MomentumVector getMomentumVector() { return moment; }
   public void setXY(int nx, int ny) { x = nx; y = ny; }
+  public void setRot(int nRot) { rot = nRot; }
 }

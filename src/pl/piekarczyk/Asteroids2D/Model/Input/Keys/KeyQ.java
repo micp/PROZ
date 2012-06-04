@@ -1,10 +1,11 @@
 package pl.piekarczyk.Asteroids2D.Model.Input.Keys;
 
+import pl.piekarczyk.Asteroids2D.Model.Input.InputEvent;
 import pl.piekarczyk.Asteroids2D.Model.AsteroidsModel;
 import pl.piekarczyk.Asteroids2D.Model.Common.Types;
 
-public class KeyQ implements Input {
+public class KeyQ implements InputEvent {
   public void reaction(AsteroidsModel model) {
-    model.setKey(Types.Keys.q, true);
+    model.setKey(Types.Keys.Q, true);
   }
 }
