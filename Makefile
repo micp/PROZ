@@ -1,7 +1,7 @@
 OPTS=
 
 #Include
-CP= src:src/GUI
+CP= .:src:src/GUI
 OPTS+=-cp ${CP}
 
 #Move .class files to ./

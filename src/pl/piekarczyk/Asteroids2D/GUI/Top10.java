@@ -1,7 +1,10 @@
+package pl.piekarczyk.Asteroids2D.GUI;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import pl.piekarczyk.Asteroids2D.Model.RecordList;
 
 public class Top10 {
   private static Top10 top10;

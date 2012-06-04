@@ -1,3 +1,4 @@
+package pl.piekarczyk.Asteroids2D.View.ViewableObjects;
 //: Ship.java
 // Player ship class definition.
 import java.awt.Graphics;
@@ -7,7 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class Ship extends JPanel {
-  private String modelFile = "data/pic/spitfire.jpg";
+  //@TODO find the files 
+  private String modelFile = "../data/pic/spitfire.jpg";
   private Image image;
   public int x, y;
 

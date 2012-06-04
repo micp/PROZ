@@ -1,3 +1,5 @@
+package pl.piekarczyk.Asteroids2D.Model;
+
 //: RecordList.java
 // Implements record list
 import java.util.prefs.*;

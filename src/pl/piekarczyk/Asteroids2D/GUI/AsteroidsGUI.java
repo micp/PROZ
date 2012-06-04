@@ -1,6 +1,8 @@
 //: AsteroidsGUI.java
 // Implements user interface and displays 
 // objects. Handles input.
+package pl.piekarczyk.Asteroids2D.GUI;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;

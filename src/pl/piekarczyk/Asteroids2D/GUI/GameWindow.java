@@ -1,7 +1,10 @@
+package pl.piekarczyk.Asteroids2D.GUI;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import pl.piekarczyk.Asteroids2D.View.ViewableObjects.Ship;
 
 public class GameWindow {
   private static GameWindow gameWindow;
@@ -59,7 +62,7 @@ public class GameWindow {
 	//talk("Ship moved to 400, wait 1");
 	//try{Thread.sleep(1000);}catch(Exception ign){}
 	ship.repaint();
-	ship.paint();
+	//ship.paint();
 	//talk("Ship repainted, wait 1");
 	//try{Thread.sleep(1000);}catch(Exception ign){}
 	//panel.repaint();
@@ -87,6 +90,7 @@ public class GameWindow {
     panel.add(bar, BorderLayout.NORTH);
     gameFrame.getContentPane().add(panel);
     gameFrame.setVisible(true);
+    getAsteroidsView.runView();
     //startGame();
   }
 }
