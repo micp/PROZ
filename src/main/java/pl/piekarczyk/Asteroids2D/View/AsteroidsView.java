@@ -1,3 +1,5 @@
+package pl.piekarczyk.Asteroids2D.View;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
