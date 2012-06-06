@@ -1,5 +1,10 @@
 OPTS=
+MAINPATH=src/pl/piekarczyk/Asteroids2D
 
+GUIP= $(MAINPATH)/GUI
+GUIJ= AsteroidsGUI.java GameWindow.java Top10.java
+MODELP= $(MAINPATH)/Model
+MODELJ= 
 #Include
 CP= .:src:src/GUI
 OPTS+=-cp ${CP}

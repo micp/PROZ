@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import pl.piekarczyk.Asteroids2D.GUI.*;
 
 //@TODO interface for GUI classes?
 //@TODO split program into packages
@@ -14,11 +15,11 @@ import java.awt.event.*;
 //@TODO change fonts, sizes, backgrounds, icons, buttons
 //@TODO show = decieving name (constructs, doesn't just show)
 public class AsteroidsGUI {
-  public static void main(String[] args) {
-    //@TODO constructor should only prepare data, not run anything
-    AsteroidsGUI.setThread(Thread.currentThread());
-    AsteroidsGUI.getAsteroidsGUI();
-  }
+  //public static void main(String[] args) {
+  //  //@TODO constructor should only prepare data, not run anything
+  //  AsteroidsGUI.setThread(Thread.currentThread());
+  //  AsteroidsGUI.getAsteroidsGUI();
+  //}
   static public void setThread(Thread t) {
     mainT = t;
   }
