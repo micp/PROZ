@@ -2,17 +2,42 @@ package pl.piekarczyk.Asteroids2D.Model;
 
 import java.util.*;
 import java.awt.Rectangle;
+import pl.piekarczyk.Asteroids2D.Model.*;
 import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
 import pl.piekarczyk.Asteroids2D.Model.Input.*;
 import pl.piekarczyk.Asteroids2D.Model.Common.*;
 import pl.piekarczyk.Asteroids2D.Model.Listener.*;
 
 public class AsteroidsModel {
-  public static AsteroidsModel getAsteroidsModel() {
-    if(curGame == null)
-      curGame = new AsteroidsModel();
-    return curGame;
+  /*--- MVP ---*/
+  public AsteroidsModel() {
+    gameInit = true;
+    gamePaused = false;
+    enemyActive = false;
+    asteroidBeltSize = 5;
+    asteroidCount = 0;
+    lives = 3;
+    score = 0;
+    //@OPT scallable?
+    fieldSize = 1000;
+
+    volatileKbdState = new boolean[Types.Keys._SIZE.ordinal()];
+    safeKbdState = new boolean[Types.Keys._SIZE.ordinal()];
   }
+  synchronized public void setKbdState(boolean[] newKbdState) {
+    volatileKbdState = newKbdState;
+  }
+  private void notifyUpdAll() {
+    GameState currentGameState = new GameState(this);
+    ListIterator<Observer> it = observers.listIterator();
+    while(it.hasNext())
+      it.next().updAll(currentGameState);
+  }
+  private boolean[] volatileKbdState;
+  private boolean[] safeKbdState;
+  private LinkedList<Observer> observers;
+  private LinkedList<ModelObject> objectList;
+  /*--- REST ---*/
   public void runGame() {
     Thread t = new Thread(new Runnable() {
       public void run() {
@@ -28,9 +53,8 @@ public class AsteroidsModel {
     initGame();
     //Game loop
     while(lives != 0) {
-      parseInput();
+      freezeInput();
       step();
-      clearInput();
     }
     //Check for new record, clean up
     finishGame();
@@ -39,12 +63,11 @@ public class AsteroidsModel {
   private void waitForInput() {
     //Await for user input before starting
     //@OPT add small sleep
-    while(inputQueue.isEmpty());
+    //TODO set pause now, make it removable by everything
   }
   private void initGame() {
     //Game initialization
     gameInit = false;
-    clearInput();
 
     addPause();
     addQuit();
@@ -53,21 +76,17 @@ public class AsteroidsModel {
     addShip();
     addAsteroidBelt();
     tryAddEnemy();
-
-    //@OPT needs to be atomic
-    //@TODO FIXME
-    //inputQueue.removeAll();
   }
   //@OPT needs to be atomic
-  private void parseInput() {
-    //@OPT limit time spent here?
-    while(!inputQueue.isEmpty())
-      inputQueue.remove().reaction(this);
+  synchronized private void freezeInput() {
+    for(int i = 0; i < Types.Keys._SIZE.ordinal(); i++)
+      safeKbdState[i] = volatileKbdState[i];
   }
   private void step() {
-    ListIterator it = objectList.listIterator();
+    ListIterator<ModelObject> it = objectList.listIterator();
     while(it.hasNext()) {
-      ModelObject cur = (ModelObject) it.next();
+      ModelObject cur = it.next();
+      //@OPT event for removal? (maybe in collisions)
       if(cur.isRemovable()) {
 	it.remove();
 	continue;
@@ -78,12 +97,6 @@ public class AsteroidsModel {
     findCollisions();
     //@OPT violates modularity
     tryAddEnemy();
-  }
-  private void clearInput() {
-    //@OPT only clear if key released event?
-    //@TODO FIXME
-    //for(int i = 0; i < Types.Keys._SIZE; ++i)
-    //  keys[i] = false;
   }
   private void finishGame() {
     //@OPT handle new record
@@ -180,33 +193,21 @@ public class AsteroidsModel {
   }
   //@OPT friend Keyevent interface?
   public void setKey(Types.Keys k, boolean state) {
-    //TODO FIXME
-    //keys[k] = state;
+    keys[k.ordinal()] = state;
   }
-  public void addListener(AsteroidListener l) {
-    listenerList.add(l);
+  //@OPT TEST ONLY
+  public boolean getKey(Types.Keys k) {
+    return keys[k.ordinal()];
   }
-  public void notifyUpdAll() {
-    ListIterator<AsteroidListener> it =
-      listenerList.listIterator();
-    while(it.hasNext())
-      it.next().updAll();
-  }
-  private AsteroidsModel() {
-    gameInit = true;
-    gamePaused = false;
-    enemyActive = false;
-    asteroidBeltSize = 5;
-    asteroidCount = 0;
-    lives = 3;
-    score = 0;
-    //@OPT scallable?
-    fieldSize = 1000;
-
-    inputQueue = new ArrayDeque<InputEvent>();
-    //TODO FIXME
-    //keys = new boolean[Types.Keys._SIZE];
-  }
+  //public void addListener(AsteroidListener l) {
+  //  listenerList.add(l);
+  //}
+  //public void notifyUpdAll() {
+  //  ListIterator<AsteroidListener> it =
+  //    listenerList.listIterator();
+  //  while(it.hasNext())
+  //    it.next().updAll();
+  //}
   private boolean gameInit, gamePaused;
   private boolean enemyActive;
   private int asteroidBeltSize, asteroidCount;
@@ -216,8 +217,6 @@ public class AsteroidsModel {
   private static AsteroidsModel curGame;
 
   private Queue<InputEvent> inputQueue;
-  private LinkedList<ModelObject> objectList;
-  private LinkedList<AsteroidListener> listenerList;
   private boolean[] keys;
 
   //public class Viewable {

@@ -10,15 +10,70 @@ import pl.piekarczyk.Asteroids2D.Model.Common.*;
 import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
 import pl.piekarczyk.Asteroids2D.Model.Input.Keys.*;
 import pl.piekarczyk.Asteroids2D.Model.Listener.*;
+import pl.piekarczyk.Asteroids2D.View.View;
 import pl.piekarczyk.Asteroids2D.View.ViewableObject.*;
+import pl.piekarczyk.Asteroids2D.Presenter.AsteroidsPresenter;
 
-public class AsteroidsView implements AsteroidListener {
-  public static AsteroidsView getAsteroidsView() {
-    if(curView == null)
-      curView = new AsteroidsView();
-    return curView;
+public class AsteroidsView implements View {
+  /*--- MVP ---*/
+  public AsteroidsView(JPanel gameField) {
+    gamePanel = gameField;
+    gamePanel.addKeyListener(new AsteroidKeyListener(this));
+    gamePresenter = new AsteroidsPresenter(this);
+    requestedClose = false;
+    kbdState = new boolean[Types.Keys._SIZE.ordinal()];
   }
-  private static AsteroidsView curView;
+  synchronized public void press(Types.Keys key) {
+    kbdState[key.ordinal()] = true;
+  }
+  synchronized public void release(Types.Keys key) {
+    kbdState[key.ordinal()] = false;
+  }
+  synchronized public boolean[] getKbdState() {
+    boolean[] stateCopy = new boolean[Types.Keys._SIZE.ordinal()];
+    //@OPT optimize array cloning (in model also)
+    for(int i = 0; i < Types.Keys._SIZE.ordinal(); ++i)
+      stateCopy[i] = kbdState[i];
+    return stateCopy;
+  }
+  public void updGameState(GameState nextGameState) {
+    //TODO
+  }
+  private class AsteroidKeyListener extends KeyAdapter {
+    public AsteroidKeyListener(AsteroidsView relate) {
+      relatedView = relate;
+    }
+    public void keyPressed(KeyEvent ke) {
+      switch (ke.getKeyCode()) {
+	case KeyEvent.VK_UP: relatedView.press(Types.Keys.UP);
+	case KeyEvent.VK_LEFT: relatedView.press(Types.Keys.LEFT);
+	case KeyEvent.VK_RIGHT: relatedView.press(Types.Keys.RIGHT);
+	case KeyEvent.VK_SPACE: relatedView.press(Types.Keys.SPACE);
+	case KeyEvent.VK_P: relatedView.press(Types.Keys.P);
+	case KeyEvent.VK_Q: relatedView.press(Types.Keys.Q);
+      }
+    }
+    public void keyReleased(KeyEvent ke) {
+      switch (ke.getKeyCode()) {
+	case KeyEvent.VK_UP: relatedView.release(Types.Keys.UP);
+	case KeyEvent.VK_LEFT: relatedView.release(Types.Keys.LEFT);
+	case KeyEvent.VK_RIGHT: relatedView.release(Types.Keys.RIGHT);
+	case KeyEvent.VK_SPACE: relatedView.release(Types.Keys.SPACE);
+	case KeyEvent.VK_P: relatedView.release(Types.Keys.P);
+	case KeyEvent.VK_Q: relatedView.release(Types.Keys.Q);
+      }
+    }
+    private AsteroidsView relatedView;
+  }
+  private AsteroidsPresenter gamePresenter;
+  private boolean[] kbdState;
+  /*--- REST ---*/
+  //public static AsteroidsView getAsteroidsView() {
+  //  if(curView == null)
+  //    curView = new AsteroidsView();
+  //  return curView;
+  //}
+  //private static AsteroidsView curView;
   public void runView() {
     Thread t = new Thread(new Runnable() {
       public void run() {
@@ -27,25 +82,22 @@ public class AsteroidsView implements AsteroidListener {
     });
     t.start();
   }
-  private AsteroidsView() {
-    requestedClose = false;
-  }
   private void startView() {
     //Create and connect to model object
-    startModel();
+    //startModel();
 
-    //Run untill closed.
+    //Run until closed.
     while(!requestedClose)
       parseEvents();
 
     //Clean up.
-    close();
+    //close();
   }
-  private void startModel() {
-    observedGame = AsteroidsModel.getAsteroidsModel();
-    observedGame.addListener(this);
-    observedGame.runGame();
-  }
+  //private void startModel() {
+  //  observedGame = AsteroidsModel.getAsteroidsModel();
+  //  observedGame.addListener(this);
+  //  observedGame.runGame();
+  //}
   public void requestClose() {
     requestedClose = true;
   }
@@ -54,15 +106,15 @@ public class AsteroidsView implements AsteroidListener {
     try{eventQueue.poll(1L, TimeUnit.SECONDS).execute();}
     catch(Exception ignore) {}
   }
-  private void close() {
-    gamePanel.removeAll();
-    observedGame = null;
-    curView = null;
-  }
-  public void setPanel(JPanel newGamePanel) {
-    gamePanel = newGamePanel;
-    gamePanel.addKeyListener(new AsteroidKeyListener());
-  }
+  //private void close() {
+  //  gamePanel.removeAll();
+  //  observedGame = null;
+  //  curView = null;
+  //}
+  //public void setPanel(JPanel newGamePanel) {
+  //  gamePanel = newGamePanel;
+  //  gamePanel.addKeyListener(new AsteroidKeyListener());
+  //}
 
   private ViewObject createViewObject(ModelObject v) {
     //@OPT fix this shit nyuaka
@@ -117,16 +169,5 @@ public class AsteroidsView implements AsteroidListener {
       }
     }
   }
-  private class AsteroidKeyListener extends KeyAdapter {
-    public void keyPressed(KeyEvent ke) {
-      switch (ke.getKeyCode()) {
-	case KeyEvent.VK_UP: observedGame.addEvent(new KeyUP());
-	case KeyEvent.VK_LEFT: observedGame.addEvent(new KeyLeft());
-	case KeyEvent.VK_RIGHT: observedGame.addEvent(new KeyRight());
-	case KeyEvent.VK_SPACE: observedGame.addEvent(new KeySpace());
-	case KeyEvent.VK_P: observedGame.addEvent(new KeyP());
-	case KeyEvent.VK_Q: observedGame.addEvent(new KeyQ());
-      }
-    }
-  }
 }
+

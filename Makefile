@@ -13,7 +13,7 @@ OPTS+=-cp ${CP}
 CDIR= .
 OPTS+= -d ${CDIR}
 
-all: AsteroidsGUI
+all: mvn_run
 run: mvn_run
 clean: Clean
 
