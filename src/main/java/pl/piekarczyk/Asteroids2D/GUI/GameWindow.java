@@ -90,7 +90,7 @@ public class GameWindow {
     panel.add(bar, BorderLayout.NORTH);
     gameFrame.getContentPane().add(panel);
     gameFrame.setVisible(true);
-    AsteroidsView.getAsteroidsView().runView();
-    AsteroidsView.getAsteroidsView().setPanel(panel);
+    //AsteroidsView.getAsteroidsView().runView();
+    //AsteroidsView.getAsteroidsView().setPanel(panel);
   }
 }

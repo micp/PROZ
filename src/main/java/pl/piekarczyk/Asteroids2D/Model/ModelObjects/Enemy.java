@@ -1,14 +1,14 @@
 package pl.piekarczyk.Asteroids2D.Model.ModelObjects;
 
+import pl.piekarczyk.Asteroids2D.Model.*;
 import pl.piekarczyk.Asteroids2D.Model.Common.Types;
-import pl.piekarczyk.Asteroids2D.Model.Vectors.MomentumVector;
 
 public class Enemy extends PhysicalObject {
-  public Enemy() {
-    this(0, 0);
+  public Enemy(AsteroidsModel thisGame) {
+    this(0, 0, thisGame);
   }
-  public Enemy(int nx, int ny) {
-    super(nx, ny);
+  public Enemy(int nx, int ny, AsteroidsModel thisGame) {
+    super(nx, ny, thisGame);
     height = 20;
     width = 20;
     type = Types.ObjectTypes.SHIP;

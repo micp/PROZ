@@ -1,5 +1,6 @@
 package pl.piekarczyk.Asteroids2D.Model.ModelObjects;
 
+import pl.piekarczyk.Asteroids2D.Model.*;
 import pl.piekarczyk.Asteroids2D.Model.Common.Types;
 
 public abstract class ModelObject {
@@ -7,9 +8,11 @@ public abstract class ModelObject {
   protected Types.ObjectTypes type;
   //@OPT
   //private int id;
+  protected AsteroidsModel game;
   public abstract void step();
   public abstract ModelObject copy();
-  public ModelObject() {
+  public ModelObject(AsteroidsModel thisGame) {
+    game = thisGame;
     removable = false;
   }
   public ModelObject(ModelObject a) {

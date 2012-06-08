@@ -5,11 +5,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.concurrent.*;
-import pl.piekarczyk.Asteroids2D.Model.*;
-import pl.piekarczyk.Asteroids2D.Model.Common.*;
-import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
-import pl.piekarczyk.Asteroids2D.Model.Input.Keys.*;
-import pl.piekarczyk.Asteroids2D.Model.Listener.*;
+//import pl.piekarczyk.Asteroids2D.Model.*;
+import pl.piekarczyk.Asteroids2D.Model.Common.Types;
+//import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
+//import pl.piekarczyk.Asteroids2D.Model.Input.Keys.*;
+//import pl.piekarczyk.Asteroids2D.Model.Listener.*;
 import pl.piekarczyk.Asteroids2D.View.View;
 import pl.piekarczyk.Asteroids2D.View.ViewableObject.*;
 import pl.piekarczyk.Asteroids2D.Presenter.AsteroidsPresenter;
@@ -23,6 +23,16 @@ public class AsteroidsView implements View {
     requestedClose = false;
     kbdState = new boolean[Types.Keys._SIZE.ordinal()];
   }
+  public void drawScore(int score){}
+  public void drawLives(int lives){}
+  public void drawPaused(){}
+  public void hidePaused(){}
+  public void drawShip(int x, int y){}
+  public void drawAsteroid(int x, int y){}
+  public void drawEnemy(int x, int y){}
+  public void drawTitle(){}
+  public void hideTitle(){}
+  public void clearPhysicalObject(){}
   synchronized public void press(Types.Keys key) {
     kbdState[key.ordinal()] = true;
   }
@@ -35,9 +45,6 @@ public class AsteroidsView implements View {
     for(int i = 0; i < Types.Keys._SIZE.ordinal(); ++i)
       stateCopy[i] = kbdState[i];
     return stateCopy;
-  }
-  public void updGameState(GameState nextGameState) {
-    //TODO
   }
   private class AsteroidKeyListener extends KeyAdapter {
     public AsteroidKeyListener(AsteroidsView relate) {
@@ -116,27 +123,27 @@ public class AsteroidsView implements View {
   //  gamePanel.addKeyListener(new AsteroidKeyListener());
   //}
 
-  private ViewObject createViewObject(ModelObject v) {
-    //@OPT fix this shit nyuaka
-    if(v.getType() == Types.ObjectTypes.SHIP)
-      return new ViewPhysicalPlayerShip(v.getX(), v.getY(), v.getRot());
-    else if(v.getType() == Types.ObjectTypes.ASTEROID)
-      return new ViewPhysicalAsteroid(v.getX(), v.getY(), v.getRot());
-    else if(v.getType() == Types.ObjectTypes.ENEMY)
-      return new ViewPhysicalEnemy(v.getX(), v.getY(), v.getRot());
-    else return null;
-  }
+  //private ViewObject createViewObject(ModelObject v) {
+  //  //@OPT fix this shit nyuaka
+  //  if(v.getType() == Types.ObjectTypes.SHIP)
+  //    return new ViewPhysicalPlayerShip(v.getX(), v.getY(), v.getRot());
+  //  else if(v.getType() == Types.ObjectTypes.ASTEROID)
+  //    return new ViewPhysicalAsteroid(v.getX(), v.getY(), v.getRot());
+  //  else if(v.getType() == Types.ObjectTypes.ENEMY)
+  //    return new ViewPhysicalEnemy(v.getX(), v.getY(), v.getRot());
+  //  else return null;
+  //}
 
-  private AsteroidsModel observedGame;
+  //private AsteroidsModel observedGame;
   private BlockingQueue<Event> eventQueue;
   private JPanel gamePanel;
   private LinkedList<ViewObject> objectList;
   private boolean requestedClose;
 
   //Event handling
-  public void updAll() {
-    eventQueue.offer(new UpdAllEvent());
-  }
+  //public void updAll() {
+  //  eventQueue.offer(new UpdAllEvent());
+  //}
   //@OPT
   private void addObject() {}
   private void updObject() {}
@@ -153,21 +160,21 @@ public class AsteroidsView implements View {
   private interface Event {
     public void execute();
   }
-  private class UpdAllEvent implements Event {
-    public void execute() {
-      LinkedList<ModelObject> newMap = observedGame.getAll();
-      gamePanel.removeAll();
-      objectList.clear();
+  //private class UpdAllEvent implements Event {
+  //  public void execute() {
+  //    LinkedList<ModelObject> newMap = observedGame.getAll();
+  //    gamePanel.removeAll();
+  //    objectList.clear();
 
-      ListIterator<ModelObject> it = newMap.listIterator();
-      while(it.hasNext()) {
-	objectList.add(createViewObject(it.next()));
-      }
-      ListIterator<ViewObject> it2 = objectList.listIterator();
-      while(it2.hasNext()) {
-	gamePanel.add(it2.next());
-      }
-    }
-  }
+  //    ListIterator<ModelObject> it = newMap.listIterator();
+  //    while(it.hasNext()) {
+  //      objectList.add(createViewObject(it.next()));
+  //    }
+  //    ListIterator<ViewObject> it2 = objectList.listIterator();
+  //    while(it2.hasNext()) {
+  //      gamePanel.add(it2.next());
+  //    }
+  //  }
+  //}
 }
 

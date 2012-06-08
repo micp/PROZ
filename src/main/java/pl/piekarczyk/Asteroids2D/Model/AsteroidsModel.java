@@ -4,9 +4,7 @@ import java.util.*;
 import java.awt.Rectangle;
 import pl.piekarczyk.Asteroids2D.Model.*;
 import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
-import pl.piekarczyk.Asteroids2D.Model.Input.*;
 import pl.piekarczyk.Asteroids2D.Model.Common.*;
-import pl.piekarczyk.Asteroids2D.Model.Listener.*;
 
 public class AsteroidsModel {
   /*--- MVP ---*/
@@ -38,6 +36,21 @@ public class AsteroidsModel {
   private LinkedList<Observer> observers;
   private LinkedList<ModelObject> objectList;
   /*--- REST ---*/
+  public void stopGame() {
+    lives = 0;
+  }
+  public void decLives() {
+    lives--;
+  }
+  public boolean isPaused() {
+    return gamePaused;
+  }
+  public void unPause() {
+    gamePaused = false;
+  }
+  public void pause() {
+    gamePaused = true;
+  }
   public void runGame() {
     Thread t = new Thread(new Runnable() {
       public void run() {
@@ -45,6 +58,9 @@ public class AsteroidsModel {
       }
     });
     t.start();
+  }
+  public boolean getKeyState(Types.Keys k) {
+    return safeKbdState[k.ordinal()];
   }
   private void startGame() {
     //Game doesn't run until user input
@@ -106,14 +122,15 @@ public class AsteroidsModel {
   }
 
   private void addPause() {
-    objectList.add(new PauseObject());
+    objectList.add(new PauseObject(this));
   }
   private void addQuit() {
-    objectList.add(new QuitObject());
+    objectList.add(new QuitObject(this));
   }
 
   private void addShip() {
-    PlayerShip ps = new PlayerShip(0, 0);
+    //@OPT default constructor
+    PlayerShip ps = new PlayerShip(0, 0, this);
     while(isColliding(ps))
       step();
     objectList.add(ps);
@@ -126,13 +143,13 @@ public class AsteroidsModel {
       addAsteroid();
   }
   private void addAsteroid() {
-    addRandom(new Asteroid());
+    addRandom(new Asteroid(this));
     asteroidCount++;
   }
   private void tryAddEnemy() {
     if(enemyActive) return;
     //@OPT decide whether to add based on current score
-    else addRandom(new Enemy());
+    else addRandom(new Enemy(this));
   }
   private void addRandom(PhysicalObject newObject) {
     Random rnd = new Random();
@@ -172,33 +189,33 @@ public class AsteroidsModel {
   }
   private boolean isColliding(ModelObject obj) {
     //@OPT change iterator template param (and others like it)
-    ListIterator it = objectList.listIterator(2);
+    ListIterator<ModelObject> it = objectList.listIterator(2);
     while(it.hasNext()) {
-      ModelObject cur = (ModelObject) it.next();
+      ModelObject cur = it.next();
       if( cur == obj ) continue;
-      else if( collisionDetect(obj, (ModelObject) it.next()) )
+      else if( collisionDetect(obj, it.next()) )
         return true;
     }
     return false;
   }
-  public LinkedList<ModelObject> getAll() {
-    ListIterator<ModelObject> it = objectList.listIterator();
-    LinkedList<ModelObject> ls = new LinkedList<ModelObject>();
-    while(it.hasNext())
-      ls.add(it.next().copy());
-    return ls;
-  }
-  public void addEvent(InputEvent in) {
-    inputQueue.add(in);
-  }
+  //public LinkedList<ModelObject> getAll() {
+  //  ListIterator<ModelObject> it = objectList.listIterator();
+  //  LinkedList<ModelObject> ls = new LinkedList<ModelObject>();
+  //  while(it.hasNext())
+  //    ls.add(it.next().copy());
+  //  return ls;
+  //}
+  //public void addEvent(InputEvent in) {
+  //  inputQueue.add(in);
+  //}
   //@OPT friend Keyevent interface?
-  public void setKey(Types.Keys k, boolean state) {
-    keys[k.ordinal()] = state;
-  }
+  //public void setKey(Types.Keys k, boolean state) {
+  //  keys[k.ordinal()] = state;
+  //}
   //@OPT TEST ONLY
-  public boolean getKey(Types.Keys k) {
-    return keys[k.ordinal()];
-  }
+  //public boolean getKey(Types.Keys k) {
+  //  return keys[k.ordinal()];
+  //}
   //public void addListener(AsteroidListener l) {
   //  listenerList.add(l);
   //}
@@ -216,7 +233,6 @@ public class AsteroidsModel {
 
   private static AsteroidsModel curGame;
 
-  private Queue<InputEvent> inputQueue;
   private boolean[] keys;
 
   //public class Viewable {

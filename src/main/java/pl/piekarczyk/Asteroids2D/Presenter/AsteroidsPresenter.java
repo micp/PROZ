@@ -21,7 +21,9 @@ public class AsteroidsPresenter implements Observer {
     gameStateQueue.push(latestGameState);
   }
   public void getGameState() throws InterruptedException {
-    gameView.updGameState(gameStateQueue.take());
+    updView(gameStateQueue.take());
+  }
+  private void updView(GameState nextGameState) {
   }
   private BlockingDeque<GameState> gameStateQueue;
   private View gameView;

@@ -27,7 +27,7 @@ public class PSAccelVector extends DynamicGameVector {
       direction = v.getDirection() + 90;
     }
   }
-  public void rotate(MomentumVector v) {
+  public void rotate(StaticGameVector v) {
     direction = v.getDirection();
   }
   public int getSpeedBase() { return speedBase; }
