@@ -1,5 +1,6 @@
 package pl.piekarczyk.Asteroids2D.GUI;
 
+import java.io.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
@@ -32,21 +33,19 @@ public class Top10 {
     GridBagConstraints c = new GridBagConstraints();
 
     //@TODO handle file read errors
+    RecordList rl;
     try {
-      RecordList rl = RecordList.read("records");
-      for(int i = 9; i >= 0; --i) {
-	Label lName = new Label(rl.getName(i));
-	Label lScore = new Label(Integer.toString(rl.getScore(i)));
-	c.gridx = 0;
-	c.gridy = 9 - i;
-	gridbag.setConstraints(lName, c);
-	c.gridx = 1;
-	gridbag.setConstraints(lScore, c);
-	panel.add(lName);
-	panel.add(lScore);
-      }
+      rl = RecordList.read("records");
+    } catch (Exception i) {
+      rl = new RecordList();
     }
-    catch (Exception ignore) {}
+    for(int i = 9; i >= 0; --i) {
+      Label lScore = new Label(Integer.toString(rl.getScore(i)));
+      c.gridx = 0;
+      c.gridy = 9 - i;
+      gridbag.setConstraints(lScore, c);
+      panel.add(lScore);
+    }
 
     c.gridx = 0;
     c.gridy = 10;

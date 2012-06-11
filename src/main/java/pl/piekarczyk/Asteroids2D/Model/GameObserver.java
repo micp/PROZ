@@ -1,5 +1,5 @@
 package pl.piekarczyk.Asteroids2D.Model;
 
-public interface Observer {
+public interface GameObserver {
   void updAll(GameState latestGameState);
 }

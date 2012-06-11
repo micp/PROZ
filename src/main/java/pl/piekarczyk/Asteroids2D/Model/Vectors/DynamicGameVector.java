@@ -1,15 +1,13 @@
 package pl.piekarczyk.Asteroids2D.Model.Vectors;
 
-import pl.piekarczyk.Asteroids2D.Model.Common.Types;
+import pl.piekarczyk.Asteroids2D.Common.Types;
 
-public abstract class DynamicGameVector extends StaticGameVector {
-  public DynamicGameVector(int newMagnitude, int newDirection) {
-    super(newMagnitude, newDirection);
-  }
-  public DynamicGameVector(DynamicGameVector a) {
-    super(a);
-  }
-  public abstract void accelerate();
-  public abstract void decelerate();
-  public abstract void rotate(StaticGameVector v, Types.Keys key);
+public interface DynamicGameVector extends GameVector {
+  double getSpeedBase();
+  void setDirection(double newDirection);
+  void setSpeedBase(double newSpeedBase);
+  void accelerate();
+  void decelerate();
+  void rotate(StaticGameVector v, Types.Keys key);
+  void rotate(StaticGameVector v);
 }

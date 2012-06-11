@@ -5,6 +5,7 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import pl.piekarczyk.Asteroids2D.View.*;
+import pl.piekarczyk.Asteroids2D.View.Viewable.*;
 
 public class GameWindow {
   private static GameWindow gameWindow;
@@ -49,6 +50,9 @@ public class GameWindow {
     //Canvas background = new Canvas();
     //background.setBackground(Color.black);
     //panel.add(background, BorderLayout.CENTER);
+    JPanel gamePanel = new JPanel(new BorderLayout());
+    gamePanel.setBackground(Color.black);
+    panel.add(gamePanel, BorderLayout.CENTER);
 
     //---
     //final Ship ship = new Ship();
@@ -87,10 +91,12 @@ public class GameWindow {
       }
     });
 
+    AsteroidsView v = new AsteroidsView();
+    v.runView();
+    panel.add(v, BorderLayout.CENTER);
+
     panel.add(bar, BorderLayout.NORTH);
     gameFrame.getContentPane().add(panel);
     gameFrame.setVisible(true);
-    //AsteroidsView.getAsteroidsView().runView();
-    //AsteroidsView.getAsteroidsView().setPanel(panel);
   }
 }

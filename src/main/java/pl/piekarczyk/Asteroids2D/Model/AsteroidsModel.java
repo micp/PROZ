@@ -1,19 +1,18 @@
 package pl.piekarczyk.Asteroids2D.Model;
 
 import java.util.*;
+import java.io.*;
 import java.awt.Rectangle;
-import pl.piekarczyk.Asteroids2D.Model.*;
-import pl.piekarczyk.Asteroids2D.Model.ModelObjects.*;
-import pl.piekarczyk.Asteroids2D.Model.Common.*;
+import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
+import pl.piekarczyk.Asteroids2D.Model.GameControllers.*;
+import pl.piekarczyk.Asteroids2D.Common.*;
 
-public class AsteroidsModel {
+public class AsteroidsModel implements GameModel {
   /*--- MVP ---*/
   public AsteroidsModel() {
-    gameInit = true;
-    gamePaused = false;
-    enemyActive = false;
-    asteroidBeltSize = 5;
-    asteroidCount = 0;
+    waiting = true;
+    paused = false;
+    over = false;
     lives = 3;
     score = 0;
     //@OPT scallable?
@@ -21,35 +20,84 @@ public class AsteroidsModel {
 
     volatileKbdState = new boolean[Types.Keys._SIZE.ordinal()];
     safeKbdState = new boolean[Types.Keys._SIZE.ordinal()];
+
+    observerList = new LinkedList<GameObserver>();
+    objectList = new LinkedList<GameObject>();
+    objectFutureList = new LinkedList<GameObject>();
+    controllerList = new LinkedList<GameController>();
+
+    //controllerList.add(new PauseController(this));
+    controllerList.add(new QuitController(this));
+
+    controllerList.add(new PSProducerController(this));
+    controllerList.add(new AsteroidProducerController(this));
+    controllerList.add(new EnemyProducerController(this));
+    controllerList.add(new MissileProducerController(this));
   }
   synchronized public void setKbdState(boolean[] newKbdState) {
     volatileKbdState = newKbdState;
   }
+  public void addObserver(GameObserver obs) {
+    if(observerList.contains(obs)) return;
+    observerList.push(obs);
+  }
   private void notifyUpdAll() {
-    GameState currentGameState = new GameState(this);
-    ListIterator<Observer> it = observers.listIterator();
+    GameState currentGameState = new AsteroidsState(this);
+    ListIterator<GameObserver> it = observerList.listIterator();
     while(it.hasNext())
       it.next().updAll(currentGameState);
   }
   private boolean[] volatileKbdState;
   private boolean[] safeKbdState;
-  private LinkedList<Observer> observers;
-  private LinkedList<ModelObject> objectList;
-  /*--- REST ---*/
+  private LinkedList<GameObserver> observerList;
+  private LinkedList<GameObject> objectList;
+  private LinkedList<GameObject> objectFutureList;
+  private LinkedList<GameController> controllerList;
+  /*--- INTERFACE ---*/
+  //@OPT do this in a better way
+  public LinkedList<GameObject> getList() { 
+    return objectList;
+    //LinkedList<GameObject> result = new LinkedList<GameObject>();
+    //ListIterator<GameObject> it = objectList.listIterator();
+    //while(it.hasNext())
+    //  result.add(it.next().copy());
+    //return result; 
+  }
+  public LinkedList<GameObject> getFutureList() {
+    return objectFutureList;
+  }
+  public int getLives() {
+    return lives;
+  }
+  public int getScore() {
+    return score;
+  }
+  public int getFieldSize() {
+    return fieldSize;
+  }
+  public boolean isOver() {
+    return over;
+  }
+  public boolean isWaiting() {
+    return waiting;
+  }
   public void stopGame() {
     lives = 0;
   }
   public void decLives() {
     lives--;
   }
+  public void addScore(int sc) {
+    score += sc;
+  }
   public boolean isPaused() {
-    return gamePaused;
+    return paused;
   }
   public void unPause() {
-    gamePaused = false;
+    paused = false;
   }
   public void pause() {
-    gamePaused = true;
+    paused = true;
   }
   public void runGame() {
     Thread t = new Thread(new Runnable() {
@@ -62,6 +110,7 @@ public class AsteroidsModel {
   public boolean getKeyState(Types.Keys k) {
     return safeKbdState[k.ordinal()];
   }
+  /*--- REST ---*/
   private void startGame() {
     //Game doesn't run until user input
     waitForInput();
@@ -70,7 +119,9 @@ public class AsteroidsModel {
     //Game loop
     while(lives != 0) {
       freezeInput();
-      step();
+      tick();
+      notifyUpdAll();
+      try{Thread.sleep(50);}catch(Exception i){}
     }
     //Check for new record, clean up
     finishGame();
@@ -78,30 +129,33 @@ public class AsteroidsModel {
 
   private void waitForInput() {
     //Await for user input before starting
-    //@OPT add small sleep
     //TODO set pause now, make it removable by everything
   }
   private void initGame() {
     //Game initialization
-    gameInit = false;
-
-    addPause();
-    addQuit();
-
-    //@OPT violates modularity
-    addShip();
-    addAsteroidBelt();
-    tryAddEnemy();
+    waiting = false;
   }
-  //@OPT needs to be atomic
   synchronized private void freezeInput() {
     for(int i = 0; i < Types.Keys._SIZE.ordinal(); i++)
       safeKbdState[i] = volatileKbdState[i];
   }
-  private void step() {
-    ListIterator<ModelObject> it = objectList.listIterator();
+  //@OPT error log framework
+  private void tick() {
+    runControllers();
+    runObjects();
+    findCollisions();
+    copyFutureObjects();
+  }
+  private void runControllers() {
+    ListIterator<GameController> it = controllerList.listIterator();
     while(it.hasNext()) {
-      ModelObject cur = it.next();
+      it.next().manage();
+    }
+  }
+  private void runObjects() {
+    ListIterator<GameObject> it = objectList.listIterator();
+    while(it.hasNext()) {
+      GameObject cur = it.next();
       //@OPT event for removal? (maybe in collisions)
       if(cur.isRemovable()) {
 	it.remove();
@@ -109,69 +163,32 @@ public class AsteroidsModel {
       }
       cur.step();
     }
-    //@OPT error log framework
-    findCollisions();
-    //@OPT violates modularity
-    tryAddEnemy();
   }
   private void finishGame() {
     //@OPT handle new record
     //Reset game
-    //@OPT unsafe?
-    curGame = null;
-  }
-
-  private void addPause() {
-    objectList.add(new PauseObject(this));
-  }
-  private void addQuit() {
-    objectList.add(new QuitObject(this));
-  }
-
-  private void addShip() {
-    //@OPT default constructor
-    PlayerShip ps = new PlayerShip(0, 0, this);
-    while(isColliding(ps))
-      step();
-    objectList.add(ps);
-  }
-  private void addAsteroidBelt() {
-    addAsteroidBelt(asteroidBeltSize);
-  }
-  private void addAsteroidBelt(int size) {
-    while( size - asteroidCount > 0 )
-      addAsteroid();
-  }
-  private void addAsteroid() {
-    addRandom(new Asteroid(this));
-    asteroidCount++;
-  }
-  private void tryAddEnemy() {
-    if(enemyActive) return;
-    //@OPT decide whether to add based on current score
-    else addRandom(new Enemy(this));
-  }
-  private void addRandom(PhysicalObject newObject) {
-    Random rnd = new Random();
-    while(true) {
-      int x = rnd.nextInt(2 * fieldSize) - fieldSize;
-      int y = rnd.nextInt(2 * fieldSize) - fieldSize;
-      newObject.setXY(x, y);
-      if(!isColliding(newObject)) {
-	objectList.add(newObject);
-	break;
-      }
+    RecordList rl;
+    try {
+      rl = RecordList.read("records");
+    } catch(Exception e) {
+      rl = new RecordList();
     }
+    rl.addRecord(score);
+    try {
+      rl.write("records");
+    } catch(Exception i) {}
+    over = true;
+    notifyUpdAll();
   }
   private void findCollisions() {
     //Skip pause and quit objects
-    ListIterator it = objectList.listIterator(2);
+    ListIterator<GameObject> it = objectList.listIterator();
     while(it.hasNext()) {
       //@OPT this is wrong, search for others like it
-      PhysicalObject cur = (PhysicalObject) it.next();
-      ListIterator it2 = it;
+      GameObject cur = it.next();
+      ListIterator<GameObject> it2 = it;
       while(it2.hasNext()) {
-	PhysicalObject next = (PhysicalObject) it2.next();
+	GameObject next = it2.next();
 	if(collisionDetect(cur, next)) {
 	  cur.collide(next.getType());
 	  next.collide(cur.getType());
@@ -179,84 +196,32 @@ public class AsteroidsModel {
       }
     }
   }
+  private void copyFutureObjects() {
+    ListIterator<GameObject> it = objectFutureList.listIterator();
+    while(it.hasNext())
+      objectList.add(it.next());
+    objectFutureList.clear();
+  }
   //@OPT decide how to optimize (asteroids can't collide with asteroids)
-  private boolean collisionDetect(ModelObject a, ModelObject b) {
-    Rectangle aRec = new Rectangle(a.getX(), a.getY(), 
+  private boolean collisionDetect(GameObject a, GameObject b) {
+    Rectangle aRec = new Rectangle((int)a.getX(), (int)a.getY(), 
                                    a.getWidth(), a.getHeight());
-    Rectangle bRec = new Rectangle(b.getX(), b.getY(),
+    Rectangle bRec = new Rectangle((int)b.getX(), (int)b.getY(),
                                    b.getWidth(), b.getHeight());
     return aRec.intersects(bRec);
   }
-  private boolean isColliding(ModelObject obj) {
+  public boolean isColliding(GameObject obj) {
     //@OPT change iterator template param (and others like it)
-    ListIterator<ModelObject> it = objectList.listIterator(2);
+    ListIterator<GameObject> it = objectList.listIterator(0);
     while(it.hasNext()) {
-      ModelObject cur = it.next();
+      GameObject cur = it.next();
       if( cur == obj ) continue;
-      else if( collisionDetect(obj, it.next()) )
+      else if( collisionDetect(obj, cur) )
         return true;
     }
     return false;
   }
-  //public LinkedList<ModelObject> getAll() {
-  //  ListIterator<ModelObject> it = objectList.listIterator();
-  //  LinkedList<ModelObject> ls = new LinkedList<ModelObject>();
-  //  while(it.hasNext())
-  //    ls.add(it.next().copy());
-  //  return ls;
-  //}
-  //public void addEvent(InputEvent in) {
-  //  inputQueue.add(in);
-  //}
-  //@OPT friend Keyevent interface?
-  //public void setKey(Types.Keys k, boolean state) {
-  //  keys[k.ordinal()] = state;
-  //}
-  //@OPT TEST ONLY
-  //public boolean getKey(Types.Keys k) {
-  //  return keys[k.ordinal()];
-  //}
-  //public void addListener(AsteroidListener l) {
-  //  listenerList.add(l);
-  //}
-  //public void notifyUpdAll() {
-  //  ListIterator<AsteroidListener> it =
-  //    listenerList.listIterator();
-  //  while(it.hasNext())
-  //    it.next().updAll();
-  //}
-  private boolean gameInit, gamePaused;
-  private boolean enemyActive;
-  private int asteroidBeltSize, asteroidCount;
+  private boolean paused, waiting, over;
   private int lives, score;
   private int fieldSize;
-
-  private static AsteroidsModel curGame;
-
-  private boolean[] keys;
-
-  //public class Viewable {
-  //  //@OPT restrict access
-  //  public Viewable(PhysicalObject obj) {
-  //    x = obj.getX();
-  //    y = obj.getY();
-  //    rot = obj.getRot();
-  //    type = obj.getType();
-  //  }
-  //  public int x, y, rot;
-  //  public Types.PhysicalObjectTypes type;
-  //}
-  //@OPT implement those
-  public void getOjbect(int id) {}
-
-  /*--- OLD ---*/
-  //private ModelObject 
-  //producePhysicalObject(Types.PhysicalObjectTypes type, int x, int y) {
-  //  if(type == Types.PhysicalObjectTypes.SHIP) 
-  //    return new PlayerShip(x, y);
-  //  else if(type == Types.PhysicalObjectTypes.ASTEROID) 
-  //    return new Asteroid(x, y);
-  //  else if(type == Types.PhysicalObjectTypes.ENEMY) 
-  //    return new Enemy(x, y);
-  //}
 }

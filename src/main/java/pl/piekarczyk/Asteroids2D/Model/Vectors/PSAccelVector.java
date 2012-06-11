@@ -1,34 +1,39 @@
 package pl.piekarczyk.Asteroids2D.Model.Vectors;
 
-import pl.piekarczyk.Asteroids2D.Model.Common.*;
+import pl.piekarczyk.Asteroids2D.Common.Types;
 import java.lang.Math;
 
-public class PSAccelVector extends DynamicGameVector {
-  private int speedBase;
-  public PSAccelVector(int newMagnitude, int newDirection) {
-    super(newMagnitude, newDirection);
-    speedBase = 0; 
+public class PSAccelVector extends DynamicAsteroidsVector {
+  public PSAccelVector(double newSpeedBase, double newDirection) {
+    super(newSpeedBase, newDirection);
   }
-  public PSAccelVector(PSAccelVector a) {
+  public PSAccelVector(DynamicGameVector a) {
     super(a);
-    speedBase = a.getSpeedBase();
   }
+  //public PSAccelVector(PSAccelVector a) {
+  //  super(a);
+  //}
   public void accelerate() { 
-    magnitude = (int) Math.log1p( (double)++speedBase );
+    //speedBase+= 0.5;
+    //if(speedBase > 10) speedBase = 10;
+    //magnitude = Math.log1p( speedBase );
+    magnitude = Math.log1p( 30 );
   }
   public void decelerate() {
-    magnitude = (int) Math.log1p( (double)--speedBase );
+    //speedBase-= 1.0;
+    //if(speedBase < 0) speedBase = 0;
+    //magnitude = Math.log1p( speedBase );
+    magnitude = Math.log1p( 0 );
   }
   public void rotate(StaticGameVector v, Types.Keys key) {
     if(key == Types.Keys.LEFT) {
-      direction = v.getDirection() - 90;
+      this.setDirection(v.getDirection() + 45);
     }
     if(key == Types.Keys.RIGHT) {
-      direction = v.getDirection() + 90;
+      this.setDirection(v.getDirection() - 45);
     }
   }
   public void rotate(StaticGameVector v) {
-    direction = v.getDirection();
+    this.setDirection(v.getDirection());
   }
-  public int getSpeedBase() { return speedBase; }
 }

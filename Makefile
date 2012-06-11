@@ -14,16 +14,14 @@ CDIR= .
 OPTS+= -d ${CDIR}
 
 all: mvn_run
-run: mvn_run
 clean: Clean
 
 AsteroidsGUI: src/GUI/AsteroidsGUI.java
 	javac src/GUI/AsteroidsGUI.java ${OPTS}
 Run: AsteroidsGUI
 	java AsteroidsGUI
-mvn_run: mvn_build
+mvn_run:
+	@mvn clean compile
 	@mvn exec:java -Dexec.mainClass="pl.piekarczyk.Asteroids2D.Asteroids2D"
-mvn_build:
-	@mvn compile
 Clean:
 	@rm *.class

@@ -1,10 +1,14 @@
 package pl.piekarczyk.Asteroids2D.Model;
 
-import pl.piekarczyk.Asteroids2D.Model.AsteroidsModel;
+import java.util.*;
+import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
 
-public class GameState {
-  public GameState(AsteroidsModel model) {
-    gameModel = model;
-  }
-  private AsteroidsModel gameModel;
+public interface GameState {
+  ListIterator<GameObject> getObjectIterator();
+  int getScore();
+  int getLives();
+  int getFieldSize();
+  boolean isPaused();
+  boolean isOver();
+  boolean isWaiting();
 }
