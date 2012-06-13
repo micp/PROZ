@@ -66,6 +66,12 @@ public class AsteroidsModel implements GameModel {
     }
     return false;
   }
+  /** 
+   * Registers an observer with the game model. Will be notified of changes
+   * in the game model at the end of each loop. Does not allow for duplicate 
+   * entries.
+   * @param obs Observer to be appended to the list.
+   */
   public void addObserver(GameObserver obs) {
     if(observerList.contains(obs)) return;
     observerList.push(obs);
@@ -85,9 +91,18 @@ public class AsteroidsModel implements GameModel {
     while(it.hasNext())
       it.next().updAll(currentGameState);
   }
+  /**
+   * Requests the game to close. Does so by setting lives to zero. Will not 
+   * stop the game immediately, instead will wait until the current loop
+   * is finished.
+   */
   public void stopGame() {
     lives = 0;
   }
+  /**
+   * Starts the main game loop. Forks into separate thread which will run the
+   * loop until the game is over.
+   */
   public void runGame() {
     Thread t = new Thread(new Runnable() {
       public void run() {

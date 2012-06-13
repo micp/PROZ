@@ -3,7 +3,16 @@ package pl.piekarczyk.Asteroids2D.Model;
 import java.util.*;
 import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
 
+/**
+ * Used to hold a state of the game. Constructed by the model to provide
+ * information to the observers.
+ */
 public class AsteroidsState implements GameState {
+  /**
+   * Copies all necessary information from the model. The constructed object
+   * will hold complete information set without any need for further 
+   * interaction.
+   */
   public AsteroidsState(GameModel model) {
     lives = model.getLives();
     score = model.getScore();
