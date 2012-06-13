@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.Math;
 
+/**
+ * Loads the tiny asteroid image for the view.
+ */
 public class TinyAsteroid extends ViewObject {
   public TinyAsteroid(double nx, double ny, double nRot) {
     super(nx, ny, nRot);

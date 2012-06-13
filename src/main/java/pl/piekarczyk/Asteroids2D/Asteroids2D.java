@@ -1,6 +1,3 @@
-/**
- * Package comment.
- */
 package pl.piekarczyk.Asteroids2D;
 
 import pl.piekarczyk.Asteroids2D.GUI.AsteroidsGUI;

@@ -2,7 +2,20 @@ package pl.piekarczyk.Asteroids2D.Model.Vectors;
 
 import java.lang.Math;
 
+/**
+ * A generic static game vector with all methods defined.
+ */
 public class StaticAsteroidsVector implements StaticGameVector {
+  /**
+   * Constructs a vector with the specified parameters. Makes sure that
+   * the values are valid by reversing the direction if the newMagnitude
+   * provided is negative, limiting the newDirection to 360 and handling
+   * negative values.
+   * @param newMagnitude Requested magnitude of the new vector. If negative
+   * the vector will be reversed.
+   * @param newDirection Requested direction of the new vector, in degrees.
+   * Negative and out of bound values are handled properly.
+   */
   public StaticAsteroidsVector(double newMagnitude, double newDirection) {
     magnitude = newMagnitude;
     direction = newDirection%360;
@@ -12,6 +25,10 @@ public class StaticAsteroidsVector implements StaticGameVector {
       magnitude*=-1;
     }
   }
+  /**
+   * Copies the provided vectors magnitude and direction.
+   * @param a The vector to be copied.
+   */
   public StaticAsteroidsVector(GameVector a) {
     magnitude = a.getMagnitude();
     direction = a.getDirection();
@@ -33,6 +50,10 @@ public class StaticAsteroidsVector implements StaticGameVector {
     direction = x%360;
     if(x < 0) direction += 360;
   }
+  /**
+   * Sums this vector with vector b and stores the result within this vector.
+   * @param b Vector to sum with.
+   */
   public void sumWith(GameVector b) {
     double x1 = Math.sin(
 	Math.toRadians(direction) ) * magnitude;

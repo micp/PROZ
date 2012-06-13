@@ -7,16 +7,33 @@ import pl.piekarczyk.Asteroids2D.Model.*;
 import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
 import pl.piekarczyk.Asteroids2D.View.GameView;
 
+/**
+ * A presenter implementation. Implements all methods declared in the
+ * GamePresenter interface. Also implements methods defined in the
+ * GameObserver, allowing this to connect to the model.
+ */
 public class AsteroidsPresenter implements GameObserver, GamePresenter {
+  /**
+   * Just initializes some variables, doesn't start the model. See 
+   * {@link #startPresenter()}
+   * @param writeTo The game view this presenter is connected to.
+   */
   public AsteroidsPresenter(GameView writeTo) {
     gameView = writeTo;
     gameStateQueue = new LinkedBlockingDeque<GameState>(1);
   }
+  /**
+   * Constructs and runs the game model.
+   */
   public void startPresenter() {
     gameModel = new AsteroidsModel();
     gameModel.addObserver(this);
     gameModel.runGame();
   }
+  /**
+   * Used by the view to notify the presenter of keyboard state change. Handles
+   * retrieving new state and injecting it to the model. 
+   */
   public void updKbdState() {
     boolean[] nextState = gameView.getKbdState();
     gameModel.setKbdState(nextState);

@@ -11,7 +11,15 @@ import pl.piekarczyk.Asteroids2D.GUI.*;
 import pl.piekarczyk.Asteroids2D.View.Viewable.*;
 import pl.piekarczyk.Asteroids2D.Presenter.*;
 
+/**
+ * An implementation of the game view. Uses swing and awt to display the 
+ * game state to the player.
+ */
 public class AsteroidsView extends JPanel implements GameView {
+  /**
+   * Sets up basic variables. Doesn't create a presenter or a game, nor does it
+   * start the game. See {@link #runView()}
+   */
   public AsteroidsView() {
     setFocusable(true);
     setBackground(Color.black);
@@ -24,18 +32,29 @@ public class AsteroidsView extends JPanel implements GameView {
     kbdState = new boolean[Types.Keys._SIZE.ordinal()];
     viewableList = new LinkedList<ViewObject>();
   }
+  /**
+   * Used by KeyListener to register a pressed key with the view.
+   */
   public void press(Types.Keys key) {
     synchronized(kbdState) {
       kbdState[key.ordinal()] = true;
       gamePresenter.updKbdState();
     }
   }
+  /**
+   * Used by KeyListener to register a released key with the view.
+   */
   public void release(Types.Keys key) {
     synchronized(kbdState) {
       kbdState[key.ordinal()] = false;
       gamePresenter.updKbdState();
     }
   }
+  /**
+   * Allows the presenter to retrieve the latest keyboard state. Creates
+   * a copy of the current keyboard state.
+   * @return A reference to a copy of the keyboard state.
+   */
   public boolean[] getKbdState() {
     synchronized(kbdState) {
       boolean[] stateCopy = new boolean[Types.Keys._SIZE.ordinal()];
@@ -90,6 +109,10 @@ public class AsteroidsView extends JPanel implements GameView {
       viewableList.add(new Enemy(x, y, rot));
     }
   }
+  /**
+   * Overridden swing paintComponent method. Should only be invoked by the
+   * EDT thread.
+   */
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
     Graphics2D g2d = (Graphics2D) g;
@@ -114,6 +137,10 @@ public class AsteroidsView extends JPanel implements GameView {
 
     g.dispose();
   }
+  /**
+   * Actually starts the view. Creates a forked thread to run the view in.
+   * Also creates a presenter and connects to it. Starts the view loop.
+   */
   public void runView() {
     Thread t = new Thread(new Runnable() {
       public void run() {
@@ -129,7 +156,6 @@ public class AsteroidsView extends JPanel implements GameView {
       else if(k == KeyEvent.VK_LEFT) press(Types.Keys.LEFT);
       else if(k == KeyEvent.VK_RIGHT) press(Types.Keys.RIGHT);
       else if(k == KeyEvent.VK_SPACE) press(Types.Keys.SPACE);
-      else if(k == KeyEvent.VK_P) press(Types.Keys.P);
       else if(k == KeyEvent.VK_Q) press(Types.Keys.Q);
     }
     public void keyReleased(KeyEvent ke) {
@@ -138,7 +164,6 @@ public class AsteroidsView extends JPanel implements GameView {
       else if(k == KeyEvent.VK_LEFT) release(Types.Keys.LEFT);
       else if(k == KeyEvent.VK_RIGHT) release(Types.Keys.RIGHT);
       else if(k == KeyEvent.VK_SPACE) release(Types.Keys.SPACE);
-      else if(k == KeyEvent.VK_P) release(Types.Keys.P);
       else if(k == KeyEvent.VK_Q) release(Types.Keys.Q);
     }
   }

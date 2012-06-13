@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.Math;
 
+/**
+ * Loads the missile image for the view.
+ */
 public class Missile extends ViewObject {
   public Missile(double nx, double ny, double nRot) {
     super(nx, ny, nRot);

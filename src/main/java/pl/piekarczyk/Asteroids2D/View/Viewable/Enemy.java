@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.Math;
 
+/**
+ * Loads the enemy image for the view.
+ */
 public class Enemy extends ViewObject {
   public Enemy(double nx, double ny, double nRot) {
     super(nx, ny, nRot);

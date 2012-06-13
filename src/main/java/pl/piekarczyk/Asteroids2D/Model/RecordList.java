@@ -10,7 +10,7 @@ import java.io.*;
  */
 public class RecordList implements Serializable {
   /**
-   * Produces a list of ten 0 scores.
+   * Produces a list of ten "0" scores.
    */
   public RecordList() {
     for(int i = 0; i < 10; ++i)
@@ -52,11 +52,12 @@ public class RecordList implements Serializable {
   }
   /**
    * Attempts to read the list from the disk. Throws an exception in case of 
-   * failure
+   * failure.
    * @param filename The name of the file to be read.
    * @throws IOEXception In case of read failure, usually if the file doesn't
    * exist.
-   * @throws 
+   * @throws ClassNotFoundException Can happen if trying to open an invalid
+   * file.
    */
   public static RecordList read(String filename) 
   throws IOException, ClassNotFoundException {
@@ -66,6 +67,11 @@ public class RecordList implements Serializable {
     in.close();
     return result;
   }
+  /**
+   * Returns the score of the selected position
+   * @param i The chosen position.
+   * @return The score.
+   */
   public int getScore(int i) {
     return ls.get(i).getScore();
   }

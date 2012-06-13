@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.Math;
 
+/**
+ * Loads the player ship image for the view.
+ */
 public class PlayerShip extends ViewObject {
   public PlayerShip(double nx, double ny, double nRot) {
     super(nx, ny, nRot);

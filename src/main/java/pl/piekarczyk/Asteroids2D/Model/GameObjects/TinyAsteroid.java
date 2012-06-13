@@ -4,6 +4,11 @@ import java.util.*;
 import pl.piekarczyk.Asteroids2D.Common.Types;
 import pl.piekarczyk.Asteroids2D.Model.GameModel;
 
+/**
+ * A tiny asteroid the usual 
+ * {@link pl.piekarczyk.Asteroids2D.Model.GameObjects#Asteroid} split into. 
+ * Behaves almost the same as Asteroid except these don't split anymore.
+ */
 public class TinyAsteroid extends AsteroidsObject {
   public TinyAsteroid(double nx, double ny, GameModel thisGame) {
     super(nx, ny, thisGame);
@@ -23,6 +28,11 @@ public class TinyAsteroid extends AsteroidsObject {
   public void step() {
     move();
   }
+  /**
+   * Notifies the asteroid of collision. If collideWith is of either Asteroid
+   * or TinyAsteroid type does nothing. In other case increases the game models
+   * score.
+   */
   public void collide(Types.ObjectTypes collideWith) {
     if(collideWith == Types.ObjectTypes.TINYASTEROID ||
 	collideWith == Types.ObjectTypes.ASTEROID) {

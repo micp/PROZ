@@ -5,10 +5,21 @@ import pl.piekarczyk.Asteroids2D.Common.Types;
 import pl.piekarczyk.Asteroids2D.Model.GameModel;
 import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
 
+/**
+ * Places an enemy ship on the field. Supports only one concurrent enemy ship.
+ * Uses Random() to decide if a ship should be placed, if one is not active
+ * yet.
+ */
 public class EnemyProducerController extends ProducerControllerHelper {
   public EnemyProducerController(GameModel thisGame) {
     super(thisGame);
   }
+  /**
+   * Decides whether to spawn a new enemy. If one is already active does 
+   * nothing. Otherwise takes a Random() roll to see if an enemy should
+   * be spawned. The position and direction are chosen at random with
+   * no guarantees made.
+   */
   public void manage() {
     if(count > 0) return;
 
@@ -21,8 +32,17 @@ public class EnemyProducerController extends ProducerControllerHelper {
       incCount();
     }
   }
+  /**
+   * Empty, does nothing.
+   */
   public void close() {}
+  /**
+   * Empty, does nothing.
+   */
   public void notifyCreated() {}
+  /**
+   * Decrements the variable used to track the amount of ships.
+   */
   public void notifyDestroyed() {
     decCount();
   }

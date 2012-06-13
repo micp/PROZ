@@ -5,11 +5,23 @@ import pl.piekarczyk.Asteroids2D.Common.Types;
 import pl.piekarczyk.Asteroids2D.Model.GameModel;
 import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
 
+/**
+ * Responds to player request to shoot a missile. Forces a small delay 
+ * between each missile. Responds to the space key. Does not limit the 
+ * amount of concurrent missiles.
+ */
 public class MissileProducerController extends ProducerControllerHelper {
   public MissileProducerController(GameModel thisGame) {
     super(thisGame);
     timer = System.currentTimeMillis();
   }
+  /**
+   * Decides whether to emit a new missile. Responds only to space key.
+   * If not enough time passed since last missile does nothing. Otherwise
+   * finds the player ship in the list of game objects, quitting if one is
+   * not active, and calculates the proper coordinates and direction of the
+   * new missile.
+   */
   public void manage() {
     if(!game.getKeyState(Types.Keys.SPACE)) return;
     if(System.currentTimeMillis() - timer < 500) return;
@@ -32,8 +44,17 @@ public class MissileProducerController extends ProducerControllerHelper {
     game.getFutureList().add(ms);
     timer = System.currentTimeMillis();
   }
+  /**
+   * Empty, does nothing.
+   */
   public void close() {}
+  /**
+   * Empty, does nothing.
+   */
   public void notifyCreated() {}
+  /**
+   * Empty, does nothing.
+   */
   public void notifyDestroyed() {}
   private double findX(PlayerShip ps) {
     double ang = Math.toRadians(ps.getRot());

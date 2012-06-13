@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.Math;
 
+/**
+ * Loads the asteroid image for the view.
+ */
 public class Asteroid extends ViewObject {
   public Asteroid(double nx, double ny, double nRot) {
     super(nx, ny, nRot);

@@ -4,6 +4,10 @@ import java.util.*;
 import pl.piekarczyk.Asteroids2D.Common.Types;
 import pl.piekarczyk.Asteroids2D.Model.GameModel;
 
+/**
+ * Represents an enemy ship. The ship is capable of randomly changing move
+ * direction and shooting missiles in random directions.
+ */
 public class Enemy extends AsteroidsObject {
   public Enemy(GameModel thisGame) {
     this(0, 0, thisGame);
@@ -20,6 +24,10 @@ public class Enemy extends AsteroidsObject {
   public Enemy copy() {
     return new Enemy(this);
   }
+  /**
+   * Moves the ship. Does a random check if the movement direction should be 
+   * changed. Also does a random check if a missile should be emitted.
+   */
   public void step() {
     Random rnd = new Random();
 
@@ -34,6 +42,9 @@ public class Enemy extends AsteroidsObject {
 
     move();
   }
+  /**
+   * Makes the ship removable. Notifies the controller.
+   */
   public void collide(Types.ObjectTypes collideWith) {
     notifyDestroyed();
     removable = true;
