@@ -1,13 +1,12 @@
 package pl.piekarczyk.Asteroids2D.Model.GameObjects;
 
 import java.lang.Math;
-
 import pl.piekarczyk.Asteroids2D.Common.Types;
 import pl.piekarczyk.Asteroids2D.Model.GameModel;
+import pl.piekarczyk.Asteroids2D.Model.GameControllers.*;
 import pl.piekarczyk.Asteroids2D.Model.Vectors.*;
 
 public abstract class AsteroidsObject implements GameObject {
-  //@OPT less constricting constructor?
   public AsteroidsObject(double nx, double ny, GameModel thisGame) { 
     game = thisGame;
     coordLimit = game.getFieldSize();
@@ -15,7 +14,6 @@ public abstract class AsteroidsObject implements GameObject {
     this.setX(nx);
     this.setY(ny);
     removable = false;
-    //@OPT chhange params
     moment = new StaticAsteroidsVector(10, 0);
   }
   public AsteroidsObject(GameObject a) {
@@ -29,16 +27,43 @@ public abstract class AsteroidsObject implements GameObject {
     this.moment = 
       new StaticAsteroidsVector(a.getMagnitude(), a.getDirection());
   }
-  public double getX() { return x; }
-  public double getY() { return y; }
-  public double getRot() { return rot; }
-  public double getMagnitude() { return moment.getMagnitude(); }
-  public double getDirection() { return moment.getDirection(); }
-  public int getHeight() { return height; }
-  public int getWidth() { return width; }
-  public boolean isRemovable() { return removable; }
-  public Types.ObjectTypes getType() { return type; }
-  public void setXY(double nx, double ny) { this.setX(nx); this.setY(ny); }
+  public double getX() {
+    return x; 
+  }
+  public double getY() {
+    return y; 
+  }
+  public double getMiddleX() {
+    return getX() + getWidth() / 2; 
+  }
+  public double getMiddleY() {
+    return getY() + getHeight() / 2; 
+  }
+  public double getRot() {
+    return rot; 
+  }
+  public double getMagnitude() {
+    return moment.getMagnitude(); 
+  }
+  public double getDirection() {
+    return moment.getDirection(); 
+  }
+  public int getHeight() {
+    return height; 
+  }
+  public int getWidth() {
+    return width; 
+  }
+  public boolean isRemovable() {
+    return removable; 
+  }
+  public Types.ObjectTypes getType() {
+    return type; 
+  }
+  public void setXY(double nx, double ny) { 
+    this.setX(nx); 
+    this.setY(ny);
+  }
   public void setX(double nx) { 
     if(nx < -coordLimit)
       x = nx + 2*coordLimit;
@@ -55,31 +80,51 @@ public abstract class AsteroidsObject implements GameObject {
     else
       y = ny;
   }
-  public void setRot(int nRot) { rot = nRot; }
-  public void setMagnitude(double x) { moment.setMagnitude(x); }
-  public void setDirection(double x) { moment.setDirection(x); }
-  public void setHeight(int nh) { height = nh; }
-  public void setWidth(int nw) { width = nw; }
-  public void setRemovable(boolean nr) { removable = nr; }
+  public void setRot(double nRot) {
+    rot = nRot%360; 
+    if(rot < 0) rot += 360;
+  }
+  public void setMagnitude(double x) {
+    moment.setMagnitude(x); 
+  }
+  public void setDirection(double x) { 
+    moment.setDirection(x);
+  }
+  public void setHeight(int nh) {
+    height = nh; 
+  }
+  public void setWidth(int nw) {
+    width = nw; 
+  }
+  public void setRemovable(boolean nr) {
+    removable = nr; 
+  }
+  public void setController(GameProducerController gc) {
+    myController = gc; 
+  }
+  protected void notifyCreated() {
+    if(myController == null) return;
+    myController.notifyCreated();
+  }
+  protected void notifyDestroyed() {
+    if(myController == null) return;
+    myController.notifyDestroyed();
+  }
   protected void move() {
     double dx = Math.sin(
 	Math.toRadians(moment.getDirection()) ) * moment.getMagnitude();
     double dy = Math.cos(
 	Math.toRadians(moment.getDirection()) ) * moment.getMagnitude();
-    this.setX(x + dx);
-    this.setY(y + dy);
-    rot = moment.getDirection();
+    setX(x + dx);
+    setY(y + dy);
   }
 
+  protected Types.ObjectTypes type;
   protected double x, y, rot;
   protected int height, width;
-  protected int coordLimit;
   protected StaticAsteroidsVector moment;
-  protected Types.ObjectTypes type;
   protected boolean removable;
   protected GameModel game;
-  //@OPT
-  //public abstract void addObservator();
-  //@OPT
-  //private int id;
+  protected int coordLimit;
+  protected GameProducerController myController;
 }

@@ -5,98 +5,78 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import pl.piekarczyk.Asteroids2D.View.*;
-import pl.piekarczyk.Asteroids2D.View.Viewable.*;
 
+/**
+ * The game window containing main game field. Start new game and connects to 
+ * the game view. Also provides a simple menu allowing the user to stop the 
+ * game.
+ */
 public class GameWindow {
-  private static GameWindow gameWindow;
-  private GameWindow() {};
-  //@TODO temporary?
-  private final JFrame gameFrame = new JFrame("Asteroids 2d");
+  /**
+   * Returns reference to the game window. Constructs the window if necessary. 
+   * If a window already exists, returns reference to that window. An existing
+   * window is destroyed only if it is closed from the menu. Note: does not 
+   * make the window visible, see {@link #show()} method.
+   * 
+   * @return A reference to the game window.
+   */
   public static GameWindow getGameWindow() {
-    if(gameWindow == null)
-       gameWindow = new GameWindow();
-    return gameWindow;
+    if(curWindow == null) {
+      curWindow = new GameWindow();
+    }
+    return curWindow;
   }
+  /**
+   * Makes the window visible. Also starts a new game (it would be pointless
+   * to start it in an invisible window).
+   */
   public void show() {
-    //final JFrame gameFrame = new JFrame("Asteroids 2d");
-    //@TODO handle window close
+    newGame();
+    gameFrame.setVisible(true);
+  }
+  private GameWindow() {
+    gameFrame = new JFrame("Asteroids 2d");
     gameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     gameFrame.setSize(500, 500);
-    //@TODO temporary
     gameFrame.setResizable(false);
 
-    /*temp*/final JPanel panel = new JPanel(new BorderLayout());
+    panel = new JPanel(new BorderLayout());
     JMenuBar bar = new JMenuBar();
     JMenu gameMenu = new JMenu("Game");
     JMenuItem[] gameMenuItems = {
-      new JMenuItem("Restart"),
       new JMenuItem("Quit"),
-    };
-    JMenu helpMenu = new JMenu("Help");
-    JMenuItem[] helpMenuItems = {
-      new JMenuItem("Controls"),
-      new JMenuItem("About"),
     };
 
     for(int i = 0; i < gameMenuItems.length; i++)
       gameMenu.add(gameMenuItems[i]);
-    for(int i = 0; i < helpMenuItems.length; i++)
-      helpMenu.add(helpMenuItems[i]);
     bar.add(gameMenu); 
-    bar.add(helpMenu);
 
-    //@TODO jpanel zamiast canv
-    //draw in paint component
-    //Canvas background = new Canvas();
-    //background.setBackground(Color.black);
-    //panel.add(background, BorderLayout.CENTER);
-    JPanel gamePanel = new JPanel(new BorderLayout());
-    gamePanel.setBackground(Color.black);
-    panel.add(gamePanel, BorderLayout.CENTER);
-
-    //---
-    //final Ship ship = new Ship();
-    //ship.x = ship.y = 100;
-    //SwingWorker w = new SwingWorker<Void, Void>() {
-    //  public Void doInBackground() {
-    //    //System.out.format("[%d]%n", ship.x);
-    //    //talk("Thread starting, wait 1");
-    //    //try{Thread.sleep(1000);}catch(Exception ign){}
-    //    //ship.x = ship.y = 400;
-    //    //talk("Ship moved to 400, wait 1");
-    //    //try{Thread.sleep(1000);}catch(Exception ign){}
-    //    ship.repaint();
-    //    //ship.paint();
-    //    //talk("Ship repainted, wait 1");
-    //    //try{Thread.sleep(1000);}catch(Exception ign){}
-    //    //panel.repaint();
-    //    //talk("Panel repainted, wait 1");
-    //    //try{Thread.sleep(1000);}catch(Exception ign){}
-    //    //talk("All done");
-    //    return null;
-    //  }
-    //  private void talk(String s) {
-    //    String name = Thread.currentThread().getName();
-    //    System.out.format("%s: %s%n", name, s);
-    //  }
-    //};
-    //w.execute();
-    //---
-
-    //panel.add(ship, BorderLayout.CENTER);
-    gameMenuItems[1].addActionListener( new ActionListener() {
+    gameMenuItems[0].addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+	delGame();
 	gameFrame.dispose();
+	curWindow = null;
 	AsteroidsGUI.getAsteroidsGUI().setVisible(true);
       }
     });
 
-    AsteroidsView v = new AsteroidsView();
-    v.runView();
-    panel.add(v, BorderLayout.CENTER);
-
     panel.add(bar, BorderLayout.NORTH);
     gameFrame.getContentPane().add(panel);
-    gameFrame.setVisible(true);
   }
+  private void delGame() {
+    v.requestClose();
+    panel.remove(v);
+    v = null;
+  }
+  private void newGame() {
+    v = new AsteroidsView();
+    v.runView();
+    panel.add(v, BorderLayout.CENTER);
+    gameFrame.repaint();
+  }
+
+  private AsteroidsView v;
+  private static GameWindow curWindow;
+  private JPanel panel;
+  private JFrame gameFrame;
 }

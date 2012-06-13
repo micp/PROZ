@@ -27,11 +27,14 @@ public abstract class DynamicAsteroidsVector implements DynamicGameVector {
     direction = x%360;
     if(x < 0) direction += 360;
   }
-  public double getMagnitude() { return magnitude; }
-  public double getDirection() { return direction; }
-  public double getSpeedBase() { return speedBase; }
-  public abstract void accelerate();
-  public abstract void decelerate();
-  public abstract void rotate(StaticGameVector v, Types.Keys key);
-  protected double magnitude, direction, speedBase;
+  public double getMagnitude() {
+    return magnitude; 
+  }
+  public double getDirection() {
+    return direction; 
+  }
+  public double getSpeedBase() {
+    return speedBase; 
+  }
+ protected double magnitude, direction, speedBase;
 }

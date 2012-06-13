@@ -2,8 +2,6 @@ package pl.piekarczyk.Asteroids2D.View;
 
 public interface GameView {
   boolean[] getKbdState();
-  void drawTitle();
-  void drawPaused();
   void drawScore(int score);
   void drawLives(int lives);
   void drawPlayerShip(double x, double y, double rot);
@@ -13,5 +11,6 @@ public interface GameView {
   void drawMissile(double x, double y, double rot);
   void showScoreBoard();
   void clearScreen();
+  void requestClose();
   void forceRepaint();
 }

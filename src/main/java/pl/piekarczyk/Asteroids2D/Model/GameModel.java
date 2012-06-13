@@ -17,10 +17,6 @@ public interface GameModel {
   int getFieldSize();
   LinkedList<GameObject> getList();
   LinkedList<GameObject> getFutureList();
-  boolean isPaused();
   boolean isOver();
-  boolean isWaiting();
-  void unPause();
-  void pause();
   boolean isColliding(GameObject obj);
 }

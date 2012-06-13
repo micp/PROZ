@@ -3,7 +3,6 @@ package pl.piekarczyk.Asteroids2D.Model.Vectors;
 import java.lang.Math;
 
 public class StaticAsteroidsVector implements StaticGameVector {
-  protected double magnitude, direction;
   public StaticAsteroidsVector(double newMagnitude, double newDirection) {
     magnitude = newMagnitude;
     direction = newDirection%360;
@@ -17,8 +16,12 @@ public class StaticAsteroidsVector implements StaticGameVector {
     magnitude = a.getMagnitude();
     direction = a.getDirection();
   }
-  public double getMagnitude() { return magnitude; }
-  public double getDirection() { return direction; }
+  public double getMagnitude() {
+    return magnitude; 
+  }
+  public double getDirection() {
+    return direction; 
+  }
   public void setMagnitude(double x) {
     if(x < 0) {
       direction = (direction+180)%360;
@@ -47,27 +50,28 @@ public class StaticAsteroidsVector implements StaticGameVector {
       if(newy > 0)
 	direction = Math.atan(newx / newy);
       else if(newy < 0)
-	direction = Math.atan(newx / newy) + Math.toRadians(90 + 90);
+	direction = Math.atan(newx / newy) + Math.toRadians(180);
     }
     else if(newx <= 0) {
       if(newy < 0) 
 	direction = Math.atan(newx / newy) + Math.toRadians(180);
       else if(newy > 0)
-	direction = Math.atan(newx / newy) + Math.toRadians(270 + 90);
+	direction = Math.atan(newx / newy);
     }
     else if(Math.rint(newy) == 0) {
       if(newx > 0)
 	direction = Math.toRadians(90);
       else if(newx < 0)
-	direction = Math.toRadians(180);
+	direction = Math.toRadians(270);
     }
 
     if(Math.abs(Math.sin(direction)) < 0.05F || 
        Math.abs(Math.sin(direction - Math.toRadians(180))) < 0.05F)
-      magnitude = newy;
+      magnitude = Math.abs(newy);
     else
       magnitude = newx / Math.sin(direction);
     direction = Math.toDegrees(direction);
 
   }
+  protected double magnitude, direction;
 }

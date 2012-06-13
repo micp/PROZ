@@ -4,7 +4,6 @@ import java.util.prefs.*;
 import java.util.*;
 import java.io.*;
 
-//@TODO inherit from LinkedList later?
 public class RecordList implements Serializable {
   public RecordList() {
     for(int i = 0; i < 10; ++i)
@@ -27,23 +26,12 @@ public class RecordList implements Serializable {
     }
     if(ls.size() == 11) ls.removeFirst();
   }
-  public String toString() {
-    String s = new String();
-    int j = 0;
-    for(ListIterator<Record> i = ls.listIterator(); i.hasNext();) {
-      Record cur = i.next();
-      j++;
-      s += j + ": " + cur.getScore() + "\n";
-    }
-    return s;
-  }
   public void write(String filename) throws IOException {
     ObjectOutputStream out = new ObjectOutputStream(
 	new FileOutputStream(filename));
     out.writeObject(this);
     out.close();
   }
-  //@TODO fix up exceptions
   public static RecordList read(String filename) 
   throws IOException, ClassNotFoundException {
     ObjectInputStream in = new ObjectInputStream(
@@ -56,7 +44,6 @@ public class RecordList implements Serializable {
     return ls.get(i).getScore();
   }
 
-  private LinkedList<Record> ls = new LinkedList<Record>();
   private class Record implements Serializable {
     private int score;
     private Record(int nScore) {
@@ -66,4 +53,6 @@ public class RecordList implements Serializable {
       return score;
     }
   }
+
+  private LinkedList<Record> ls = new LinkedList<Record>();
 }

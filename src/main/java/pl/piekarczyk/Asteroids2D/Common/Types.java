@@ -1,12 +1,60 @@
 package pl.piekarczyk.Asteroids2D.Common;
 
-//import java.util.EnumMap;
-//import java.lang.Integer;
-
+/** 
+ * Defines types of various objects used in the game.
+ */
 public class Types {
-  public static enum Keys { UP, LEFT, RIGHT, SPACE, Q, P, _SIZE}
-//  public static EnumMap<Keys, Integer> KeyMap =
-//    new EnumMap<Keys, Integer>(Keys.class);
+  /**
+   * Defines types of keys supported by the game.
+   */
+  public static enum Keys { 
+    /**
+     * Represents keyboard UP arrow.
+     */
+    UP, 
+    /**
+     * Represents keyboard LEFT arrow.
+     */
+    LEFT, 
+    /**
+     * Represents keyboard RIGHT arrow.
+     */
+    RIGHT, 
+    /**
+     * Represents space key.
+     */
+    SPACE, 
+    /**
+     * Represents Q key.
+     */
+    Q, 
+    /**
+     * Used to calculate enum size, c++ style.
+     */
+    _SIZE}
+  /**
+   * Defines types of objects supported by the game.
+   */
   public static enum ObjectTypes { 
-    SHIP, ASTEROID, TINYASTEROID, ENEMY, MISSILE }
+    /**
+     * Represents player ship.
+     */
+    SHIP, 
+    /**
+     * Represents asteroid.
+     */
+    ASTEROID, 
+    /**
+     * Represents 'tiny' asteroid. Supposed to be created after regular 
+     * asteroid is destroyed by the player.
+     */
+    TINYASTEROID, 
+    /**
+     * Represents enemy ship.
+     */
+    ENEMY, 
+    /**
+     * Represents missile. Produced by either the player or enemy ship.
+     */
+    MISSILE }
 }

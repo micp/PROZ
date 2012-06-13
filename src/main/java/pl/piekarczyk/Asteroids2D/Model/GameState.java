@@ -8,7 +8,5 @@ public interface GameState {
   int getScore();
   int getLives();
   int getFieldSize();
-  boolean isPaused();
   boolean isOver();
-  boolean isWaiting();
 }

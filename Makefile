@@ -1,27 +1,14 @@
-OPTS=
-MAINPATH=src/pl/piekarczyk/Asteroids2D
-
-GUIP= $(MAINPATH)/GUI
-GUIJ= AsteroidsGUI.java GameWindow.java Top10.java
-MODELP= $(MAINPATH)/Model
-MODELJ= 
-#Include
-CP= .:src:src/GUI
-OPTS+=-cp ${CP}
-
-#Move .class files to ./
-CDIR= .
-OPTS+= -d ${CDIR}
-
 all: mvn_run
 clean: Clean
+doc: javadoc
 
-AsteroidsGUI: src/GUI/AsteroidsGUI.java
-	javac src/GUI/AsteroidsGUI.java ${OPTS}
-Run: AsteroidsGUI
-	java AsteroidsGUI
-mvn_run:
-	@mvn clean compile
+mvn_run: mvn_compile
 	@mvn exec:java -Dexec.mainClass="pl.piekarczyk.Asteroids2D.Asteroids2D"
+mvn_compile:
+	@mvn compile
+javadoc:
+	(cd src/main/java && javadoc -subpackages pl.piekarczyk.Asteroids2D -d ../../../target/doc)
+
+.PHONY : Clean
 Clean:
-	@rm *.class
+	-rm -r target records

@@ -9,10 +9,24 @@ public abstract class ViewObject {
     y = ny;
     rot = nRot;
   }
-  public int getX() { return (int)Math.round(x); }
-  public int getY() { return (int)Math.round(y); }
-  public int getRot() { return (int)Math.round(rot); }
+  public int getX() {
+    return (int)Math.round(x); 
+  }
+  public int getY() {
+    return (int)Math.round(y); 
+  }
+  public int getRot() {
+    return (int)Math.round(rot); 
+  }
+  public int getHeight() {
+    return height; 
+  }
+  public int getWidth() {
+    return width; 
+  }
   public abstract Image getImage();
+
   protected double x, y;
   protected double rot;
+  protected int height, width;
 }

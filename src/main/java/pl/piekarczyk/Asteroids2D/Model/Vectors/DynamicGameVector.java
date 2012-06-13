@@ -8,6 +8,4 @@ public interface DynamicGameVector extends GameVector {
   void setSpeedBase(double newSpeedBase);
   void accelerate();
   void decelerate();
-  void rotate(StaticGameVector v, Types.Keys key);
-  void rotate(StaticGameVector v);
 }
