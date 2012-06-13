@@ -5,7 +5,15 @@ import pl.piekarczyk.Asteroids2D.Common.*;
 import pl.piekarczyk.Asteroids2D.Model.GameObjects.*;
 import pl.piekarczyk.Asteroids2D.Model.GameControllers.*;
 
+/** 
+ * The Asteroids2D game. Provides a backbone for various model objects to 
+ * communicate and interact.
+ */
 public class AsteroidsModel implements GameModel {
+  /**
+   * Prepares the data and links necessary objects. Doesn't run game, just 
+   * prepares necessary data. See {@link #runGame()}.
+   */
   public AsteroidsModel() {
     over = false;
     lives = 999;
