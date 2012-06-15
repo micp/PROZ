@@ -19,6 +19,7 @@ public class AsteroidsModel implements GameModel {
     lives = 999;
     score = 0;
     fieldSize = 1000;
+    frameTime = 60;
 
     volatileKbdState = new boolean[Types.Keys._SIZE.ordinal()];
     safeKbdState = new boolean[Types.Keys._SIZE.ordinal()];
@@ -118,7 +119,7 @@ public class AsteroidsModel implements GameModel {
       tick();
       notifyUpdAll();
       try {
-	sleepTill(60);
+	sleepTill(frameTime);
       } catch(InterruptedException e) {
 	stopGame();
       }
@@ -226,4 +227,9 @@ public class AsteroidsModel implements GameModel {
   private boolean over;
   private int lives, score;
   private int fieldSize;
+  /**
+   * Minimum frame time. The model thread will be put to sleep if it the main
+   * game loop executes faster than this.
+   */
+  private int frameTime;
 }
