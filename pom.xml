@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>Asteroids2D</name>
-  <url>gttp://github.com/micp/PROZ</url>
+  <url></url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
